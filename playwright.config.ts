@@ -37,7 +37,7 @@ export default defineConfig({
       testMatch: /auth\..*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: './.auth/auth.json',
+        storageState: `${process.cwd()}/.auth/auth.json`,
       },
     },
     {
