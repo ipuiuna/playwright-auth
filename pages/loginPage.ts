@@ -13,7 +13,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto(process.env.BASE_URL!);
   }
 
   async login(user: string, password: string) {
@@ -22,3 +22,4 @@ export class LoginPage {
     await this.loginButton.click();
   }
 }
+
