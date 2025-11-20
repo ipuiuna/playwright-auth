@@ -19,8 +19,9 @@ jobs:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
       run: |
-        echo $DEBUG_PASSWORD >> secrets.txt
-        echo $DEBUG_SECRET_KEY >> secrets.txt
+        echo $BASE_URL >> secrets.txt
+        echo $SAUCE_USERNAME >> secrets.txt
+        echo $SAUCE_PASSWORD >> secrets.txt
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
