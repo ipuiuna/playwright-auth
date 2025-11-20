@@ -4,47 +4,65 @@ on: [push, pull_request]
 jobs:
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      auth-file: auth/auth.json
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - run: npm ci
-      - name: Create .env
+      
+      - name: Create .env with secrets
         run: |
           echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
           echo "SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }}" >> .env
           echo "SAUCE_PASSWORD=${{ secrets.SAUCE_PASSWORD }}" >> .env
+
       - run: npx playwright install --with-deps
-      - name: Run setup (login)
+
+      - name: Run authentication setup
         run: npx playwright test --project=setup
-      - name: Upload auth file
+
+      - name: Upload auth state
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: auth-state
-          path: auth/auth.json
+          path: .auth/auth.json
 
   test:
-    needs: setup 
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
         project: [authenticated, public]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - run: npm ci
-      - name: Download auth file
+
+      - name: Create .env with secrets
+        run: |
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
+          echo "SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }}" >> .env
+          echo "SAUCE_PASSWORD=${{ secrets.SAUCE_PASSWORD }}" >> .env
+
+      - name: Download auth state
         uses: actions/download-artifact@v4
         with:
           name: auth-state
-          path: auth/
+          path: .auth/
+
       - run: npx playwright install --with-deps
-      - run: npx playwright test --project=${{ matrix.project }}
+
+      - name: Run tests
+        run: npx playwright test --project=${{ matrix.project }}
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
