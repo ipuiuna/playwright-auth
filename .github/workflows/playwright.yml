@@ -2,41 +2,8 @@ name: Playwright Tests
 on: [push, pull_request]
 
 jobs:
-  setup:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - run: npm ci
-      
-      - name: Create .env with secrets
-        run: |
-          echo "BASE_URL=${{ secrets.BASE_URL }}" >> .env
-          echo "SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }}" >> .env
-          echo "SAUCE_PASSWORD=${{ secrets.SAUCE_PASSWORD }}" >> .env
-
-      - run: npx playwright install --with-deps
-
-      - name: Run authentication setup
-        run: npx playwright test --project=setup
-
-      - name: Upload auth state
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: auth-state
-          path: .auth/auth.json
-
   test:
-    needs: setup
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project: [authenticated, public]
     steps:
       - uses: actions/checkout@v4
 
@@ -52,19 +19,20 @@ jobs:
           echo "SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }}" >> .env
           echo "SAUCE_PASSWORD=${{ secrets.SAUCE_PASSWORD }}" >> .env
 
-      - name: Download auth state
-        uses: actions/download-artifact@v4
-        with:
-          name: auth-state
-          path: .auth/
-
       - run: npx playwright install --with-deps
 
-      - name: Run tests
-        run: npx playwright test --project=${{ matrix.project }}
+      - name: Authentication Setup
+        run: npx playwright test auth.setup.ts
+
+      - name: Run Authenticated Tests
+        run: npx playwright test --grep "@auth"
+
+      - name: Run Public Tests
+        run: npx playwright test --grep -v "@auth"
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ matrix.project }}
+          name: playwright-report
           path: playwright-report/
+          retention-days: 30
