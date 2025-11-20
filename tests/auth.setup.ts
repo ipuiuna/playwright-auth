@@ -6,7 +6,7 @@ setup('Setup for authentication tests', async ({ page, context }) => {
   console.log(">> SAUCE_USERNAME:", process.env.SAUCE_USERNAME);
   console.log(">> SAUCE_PASSWORD:", process.env.SAUCE_PASSWORD);
   const loginPage = new LoginPage(page);
-  const authFile = './.auth/auth.json';
+  const authFile = `${process.cwd()}/.auth/auth.json`;
 
   await loginPage.goto();
   await loginPage.login(
@@ -16,4 +16,5 @@ setup('Setup for authentication tests', async ({ page, context }) => {
 
   await context.storageState({ path: authFile });
 });
+
 
