@@ -16,4 +16,6 @@ setup('Setup for authentication tests', async ({ page, context }) => {
   console.log('URL atual após login:', page.url());
 
   await context.storageState({ path: storageStatePath });
+  console.log('Salvando storage em:', storageStatePath);
+  console.log('Arquivo existe?', require('fs').existsSync(storageStatePath));
 });
