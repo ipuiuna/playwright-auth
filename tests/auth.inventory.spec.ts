@@ -1,5 +1,4 @@
-import { expect } from '@playwright/test';
-import { test } from '../fixtures/loggedContext';
+import { test, expect } from '@playwright/test';
 import { InventoryPage } from '../pages/inventoryPage';
 
 test.describe('Tests with page authenticated', () => {
