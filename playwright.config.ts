@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export default defineConfig({
   testDir: './tests',
@@ -24,10 +25,7 @@ export default defineConfig({
       testMatch: /auth\..*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: path.join(
-          __dirname,
-          '../playwright-auth/.auth/auth.json'
-        ),
+        storageState: '.auth/auth.json',
       },
     },
     {
