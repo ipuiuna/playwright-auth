@@ -6,6 +6,12 @@ test.describe('Tests with page authenticated', () => {
     'should be already logged in (auth setup working)',
     { tag: '@auth' },
     async ({ page }) => {
+      console.log('Início do teste autenticado');
+      console.log(
+        'URL inicial (deve ser inventory se storageState funcionou):',
+        page.url()
+      );
+      console.log('Cookies carregadas:', await page.context().cookies());
       await page.goto('/inventory.html');
       await expect(page).toHaveURL(/inventory.html/);
     }
