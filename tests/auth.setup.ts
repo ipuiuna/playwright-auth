@@ -2,7 +2,7 @@ import { test as setup } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
 import path from 'path';
 
-const storageStatePath = path.join(process.cwd(), 'storageFile.json');
+const storageStatePath = path.resolve(__dirname, 'storageFile.json');
 
 setup('Setup for authentication tests', async ({ page, context }) => {
   const loginPage = new LoginPage(page);
