@@ -8,6 +8,7 @@ test.describe('Tests with page authenticated', () => {
     { tag: '@auth' },
     async ({ accessInventory }) => {
       console.log('URL -> ', accessInventory.url());
+      await accessInventory.goto('https://www.saucedemo.com/inventory.html');
       await expect(accessInventory).toHaveURL(/inventory.html/);
     }
   );
@@ -17,6 +18,7 @@ test.describe('Tests with page authenticated', () => {
     { tag: '@auth' },
     async ({ accessInventory }) => {
       const inventoryPage = new InventoryPage(accessInventory);
+      await accessInventory.goto('https://www.saucedemo.com/inventory.html');
       await inventoryPage.assertInventoryIsVisible();
     }
   );
