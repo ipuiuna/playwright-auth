@@ -1,5 +1,8 @@
 import { test as setup } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
+import path from 'path';
+
+const storageStatePath = path.join(process.cwd(), 'storageFile.json');
 
 setup('Setup for authentication tests', async ({ page, context }) => {
   const loginPage = new LoginPage(page);
@@ -12,5 +15,5 @@ setup('Setup for authentication tests', async ({ page, context }) => {
   console.log('✅ Login realizado com sucesso no setup');
   console.log('URL atual após login:', page.url());
 
-  await context.storageState({ path: 'storageFile.json' });
+  await context.storageState({ path: storageStatePath });
 });

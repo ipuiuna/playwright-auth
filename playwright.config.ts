@@ -1,9 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
+import path from 'path';
 
 if (!process.env.CI) {
   dotenv.config();
 }
+
+const storageStatePath = path.join(process.cwd(), 'storageFile.json');
 
 export default defineConfig({
   testDir: './tests',
@@ -28,7 +31,7 @@ export default defineConfig({
       testMatch: /auth\..*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'storageFile.json',
+        storageState: storageStatePath,
       },
     },
     {
