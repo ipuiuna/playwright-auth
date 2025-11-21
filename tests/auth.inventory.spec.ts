@@ -7,6 +7,7 @@ test.describe('Tests with page authenticated', () => {
     'should be already logged in (auth setup working)',
     { tag: '@auth' },
     async ({ accessInventory }) => {
+      console.log('URL -> ', accessInventory.url());
       await expect(accessInventory).toHaveURL(/inventory.html/);
     }
   );
