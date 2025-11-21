@@ -6,7 +6,7 @@ if (!process.env.CI) {
   dotenv.config();
 }
 
-const storageStatePath = path.resolve(__dirname, 'storageFile.json');
+const storageStatePath = path.resolve(process.cwd(), 'storageState.json');
 
 export default defineConfig({
   testDir: './tests',
