@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
 
 export default defineConfig({
   testDir: './tests',
@@ -23,7 +24,10 @@ export default defineConfig({
       testMatch: /auth\..*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'auth/auth.json',
+        storageState: path.join(
+          __dirname,
+          '../playwright-auth/.auth/auth.json'
+        ),
       },
     },
     {
