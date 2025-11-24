@@ -3,9 +3,9 @@ import { LoginPage } from '../pages/loginPage';
 import path from 'path';
 import fs from 'fs';
 
-const STORAGE_PATH = path.resolve(process.cwd(), 'storage/storageState.json');
+const STORAGE_PATH = path.join(__dirname, '../.auth/auth.json');
 
-setup('Setup for authentication tests', async ({ page, context }) => {
+setup('Setup for authentication tests', async ({ page }) => {
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.login(
@@ -23,7 +23,8 @@ setup('Setup for authentication tests', async ({ page, context }) => {
   // garante pasta
   fs.mkdirSync(path.dirname(STORAGE_PATH), { recursive: true });
 
-  await context.storageState({ path: STORAGE_PATH });
+  await page.context().storageState({ path: STORAGE_PATH });
 
   console.log('Storage salvo com success em:', STORAGE_PATH);
   console.log('Storage existe DEPOIS de salvar?', fs.existsSync(STORAGE_PATH));
+});

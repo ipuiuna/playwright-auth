@@ -1,14 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
-import path from 'path';
 
 if (!process.env.CI) {
   dotenv.config();
 }
-
-const defaultStorage = path.resolve(process.cwd(), 'storage/storageState.json');
-const STORAGE_PATH = process.env.STORAGE_PATH || defaultStorage;
-console.log('Playwright config resolved STORAGE_PATH:', STORAGE_PATH);
 
 export default defineConfig({
   testDir: './tests',
@@ -33,7 +28,7 @@ export default defineConfig({
       testMatch: /auth\..*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: STORAGE_PATH,
+        storageState: '.auth/auth.json',
       },
     },
     {
