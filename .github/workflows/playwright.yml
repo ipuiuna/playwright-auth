@@ -17,7 +17,7 @@ jobs:
       - run: npx playwright install --with-deps
 
       # ===========================
-      # DEBUG: Mostrar informações úteis
+      # DEBUG
       # ===========================
       - name: Print workspace path
         run: echo "Workspace: ${{ github.workspace }}"
@@ -32,29 +32,25 @@ jobs:
           echo "STORAGE_PATH=${STORAGE_PATH}"
 
       # ===========================
-      # Rodar testes
+      # TESTS
       # ===========================
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
-
-          # CORREÇÃO IMPORTANTE: você escreveu .jso
           STORAGE_PATH: ${{ github.workspace }}/storage/storageState.json
-
         run: |
           echo ">>> Rodando testes Playwright"
           echo "STORAGE_PATH definido como: $STORAGE_PATH"
 
-          # Garantir que pasta storage existe
           mkdir -p "$(dirname "$STORAGE_PATH")"
           echo "Pasta storage criada: $(dirname "$STORAGE_PATH")"
 
           npx playwright test
 
       # ===========================
-      # DEBUG: Mostrar se o storage foi salvo
+      # STORAGE DEBUG
       # ===========================
       - name: Show storage file after tests
         if: always()
@@ -66,7 +62,7 @@ jobs:
           cat ${{ github.workspace }}/storage/storageState.json || echo "Arquivo não encontrado."
 
       # ===========================
-      # upload report
+      # ARTIFACT
       # ===========================
       - uses: actions/upload-artifact@v4
         if: always()
