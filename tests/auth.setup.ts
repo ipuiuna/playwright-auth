@@ -13,14 +13,12 @@ setup('Setup for authentication tests', async ({ page }) => {
     process.env.SAUCE_PASSWORD!
   );
 
-  // LOGS ESSENCIAIS - sempre executados
   console.log('✅ Login realizado com sucesso no setup');
   console.log('URL atual após login:', page.url());
   console.log('CWD do setup:', process.cwd());
   console.log('Storage path (setup):', STORAGE_PATH);
   console.log('Storage existe ANTES de salvar?', fs.existsSync(STORAGE_PATH));
 
-  // garante pasta
   fs.mkdirSync(path.dirname(STORAGE_PATH), { recursive: true });
 
   await page.context().storageState({ path: STORAGE_PATH });
