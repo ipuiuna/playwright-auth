@@ -1,71 +1,54 @@
 name: Playwright Tests
-on: [push, pull_request]
+on: 
+  push:
+    branches: [ main, master ]
+  pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm' 
 
       - run: npm ci
 
-      - run: npx playwright install --with-deps
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
-      # ===========================
-      # DEBUG
-      # ===========================
-      - name: Print workspace path
-        run: echo "Workspace: ${{ github.workspace }}"
+      - name: Create storage directory
+        run: mkdir -p ./storage
 
-      - name: Print directory tree
-        run: ls -R .
-
-      - name: Print environment variables
+      - name: Print workspace and paths (debug)
         run: |
-          echo "BASE_URL=${BASE_URL}"
-          echo "SAUCE_USERNAME=${SAUCE_USERNAME}"
-          echo "STORAGE_PATH=${STORAGE_PATH}"
+          echo "github.workspace = ${{ github.workspace }}"
+          pwd
+          ls -la
 
-      # ===========================
-      # TESTS
-      # ===========================
       - name: Run Playwright tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
-          STORAGE_PATH: ${{ github.workspace }}/storage/storageState.json
-        run: |
-          echo ">>> Rodando testes Playwright"
-          echo "STORAGE_PATH definido como: $STORAGE_PATH"
+          STORAGE_PATH: ./storage/storageState.json
+        run: npx playwright test
 
-          mkdir -p "$(dirname "$STORAGE_PATH")"
-          echo "Pasta storage criada: $(dirname "$STORAGE_PATH")"
-
-          npx playwright test
-
-      # ===========================
-      # STORAGE DEBUG
-      # ===========================
       - name: Show storage file after tests
         if: always()
         run: |
-          echo "Conteúdo da pasta storage:"
-          ls -l ${{ github.workspace }}/storage || true
+          echo "=== Conteúdo da pasta storage ==="
+          ls -la storage/ || echo "Pasta storage não existe"
+          echo "=== storageState.json ==="
+          cat storage/storageState.json || echo "Arquivo não encontrado ou vazio"
 
-          echo "Conteúdo do arquivo storageState.json:"
-          cat ${{ github.workspace }}/storage/storageState.json || echo "Arquivo não encontrado."
-
-      # ===========================
-      # ARTIFACT
-      # ===========================
-      - uses: actions/upload-artifact@v4
+      - name: Upload Playwright Report
         if: always()
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: playwright-report/
